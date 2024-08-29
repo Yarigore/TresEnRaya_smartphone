@@ -2,8 +2,12 @@ package com.example.tresenraya;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +16,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends Activity {
+
+    private int jugadores;
+    private int[] casillas;
+    private Partida partida;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +48,57 @@ public class MainActivity extends Activity {
             imagen = findViewById(casilla);
             imagen.setImageResource(R.drawable.casilla);
         }
+
+        jugadores = 1;
+
+        if (view.getId() == R.id.dosjug){
+            jugadores = 2;
+        }
+
+        RadioGroup configDificultad = findViewById(R.id.configD);
+        int id = configDificultad.getCheckedRadioButtonId();
+        int dificultad = 0;
+        if (id == R.id.normal){
+            dificultad = 1;
+        } else if (id == R.id.imposible) {
+            dificultad = 2;
+        }
+
+        partida = new Partida(dificultad);
+
+        ((Button) findViewById(R.id.unjug)).setEnabled(false);
+        ((RadioGroup) findViewById(R.id.configD)).setAlpha(0);
+        ((Button) findViewById(R.id.dosjug)).setEnabled(false);
+
     }
 
-    private int jugadores;
+    public void toque(View view){
 
-    private int[] casillas;
-    private Partida partida;
+        if (partida == null){
+            return;
+        }
+
+        int casilla = 0;
+        for (int i = 0; i < casillas.length; i++){
+            if (casillas[i] == view.getId()){
+                casilla = i;
+                break;
+            }
+        }
+        marcar(casilla);
+    }
+
+    private void marcar(int casilla){
+
+        ImageView imagen;
+
+        imagen = findViewById(casillas[casilla]);
+
+        if (partida.jugador == 1){
+            imagen.setImageResource(R.drawable.circulo);
+        }
+        else{
+            imagen.setImageResource(R.drawable.cruz);
+        }
+    }
 }
