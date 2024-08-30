@@ -85,7 +85,17 @@ public class MainActivity extends Activity {
                 break;
             }
         }
+
+        if (!partida.compruebaCasilla(casilla)) return;
+
         marcar(casilla);
+        partida.turno();
+        casilla = partida.ia();
+        while (!partida.compruebaCasilla(casilla)){
+            casilla = partida.ia();
+        }
+        marcar(casilla);
+        partida.turno();
     }
 
     private void marcar(int casilla){

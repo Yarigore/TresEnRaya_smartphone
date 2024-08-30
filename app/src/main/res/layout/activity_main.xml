@@ -45,6 +45,7 @@
             <RadioButton
                 android:id="@+id/normal"
                 style="@style/radio"
+                android:checked="true"
                 android:text="@string/normal" />
 
             <RadioButton
