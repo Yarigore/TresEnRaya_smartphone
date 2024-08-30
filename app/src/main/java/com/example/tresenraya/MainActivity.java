@@ -51,8 +51,8 @@ public class MainActivity extends Activity {
 
         jugadores = 1;
 
-        if (view.getId() == R.id.dosjug){
-            jugadores = 2;
+        if (view.getId()==R.id.dosjug){
+            jugadores=2;
         }
 
         RadioGroup configDificultad = findViewById(R.id.configD);
@@ -66,9 +66,9 @@ public class MainActivity extends Activity {
 
         partida = new Partida(dificultad);
 
-        ((Button) findViewById(R.id.unjug)).setEnabled(false);
-        ((RadioGroup) findViewById(R.id.configD)).setAlpha(0);
-        ((Button) findViewById(R.id.dosjug)).setEnabled(false);
+        findViewById(R.id.unjug).setEnabled(false);
+        findViewById(R.id.configD).setAlpha(0);
+        findViewById(R.id.dosjug).setEnabled(false);
 
     }
 
@@ -89,13 +89,38 @@ public class MainActivity extends Activity {
         if (!partida.compruebaCasilla(casilla)) return;
 
         marcar(casilla);
-        partida.turno();
-        casilla = partida.ia();
-        while (!partida.compruebaCasilla(casilla)){
+        int resultado = partida.turno();
+        if (jugadores == 2) partida.turno();
+        if (resultado > 0){
+            termina(resultado);
+            return;
+        }
+        if (jugadores == 1){
             casilla = partida.ia();
+            while (!partida.compruebaCasilla(casilla)){
+                casilla = partida.ia();
+            }
         }
         marcar(casilla);
-        partida.turno();
+        resultado = partida.turno();
+        if (resultado > 0) termina(resultado);
+    }
+
+    private void termina(int resultado){
+        String mensaje = "";
+
+        if (resultado == 1) mensaje = getString(R.string.circulos_ganan);
+        else if (resultado == 2) mensaje = getString(R.string.cruces_ganan);
+        else if (resultado == 3) mensaje = getString(R.string.empate);
+
+        Toast toast = Toast.makeText(this, mensaje, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+        partida = null;
+
+        findViewById(R.id.unjug).setEnabled(true);
+        findViewById(R.id.configD).setAlpha(1);
+        findViewById(R.id.dosjug).setEnabled(true);
     }
 
     private void marcar(int casilla){
